@@ -201,7 +201,7 @@
     </div>
   </div>
 
-  <footer><span id="stamp">—</span><span>Digital Mind · actualisation auto 60 s</span></footer>
+  <footer><span id="stamp">—</span><span>Digital Mind · prochaine maj auto dans <b id="countdown">—</b></span><button id="refreshBtn" type="button" style="margin-left:auto;cursor:pointer;border:1px solid var(--line,#eceaf1);background:var(--card,#fff);color:inherit;font:inherit;border-radius:8px;padding:4px 10px">↻ Rafraîchir</button></footer>
 </div>
 
 <script>
@@ -246,7 +246,7 @@
       setLive(true);
     }catch(e){setLive(false);$("#liveTxt").textContent="flux injoignable · vérifie le webhook";}}
   ['cTotal','cToday','cRepris','cHumain'].forEach(id=>$('#'+id).classList.add('dim'));
-  refresh();setInterval(refresh,18000000);
+  var PERIOD=18000000,nextAt=Date.now()+PERIOD;function doRefresh(){refresh();nextAt=Date.now()+PERIOD;}function tickCountdown(){var ms=Math.max(0,nextAt-Date.now()),s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),x=s%60,el=document.getElementById('countdown');if(el)el.textContent=h+':'+String(m).padStart(2,'0')+':'+String(x).padStart(2,'0');}var rb=document.getElementById('refreshBtn');if(rb)rb.addEventListener('click',doRefresh);doRefresh();setInterval(doRefresh,PERIOD);setInterval(tickCountdown,1000);tickCountdown();
 </script>
 </body>
 </html>
