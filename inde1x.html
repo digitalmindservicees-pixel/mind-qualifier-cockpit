@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mind Qualifier · Cockpit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  /* ============ CONFIG ============
+     Chiffres en direct : colle l'URL du webhook Make "Qualifier — Cockpit API"
+     dans la constante API en bas de page (const API = "..."). */
+  :root{
+    --bg:#f5f5f9;
+    --card:#ffffff;
+    --ink:#13141b;
+    --ink-2:#5a5f70;
+    --faint:#9b9fb0;
+    --line:#eceaf1;
+    --line-2:#e4e2ec;
+    --coral:#e8472c;
+    --blue:#2f4fe0;
+    --violet:#7c3aed;
+    --green:#0a9d6a;
+    --teal:#0d8f86;
+    --amber:#f5a524;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;min-height:100vh;padding:clamp(14px,3vw,34px)}
+  .wrap{max-width:1040px;margin:0 auto}
+
+  /* header */
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+  .brand{display:flex;align-items:center;gap:13px}
+  .sig{width:46px;height:46px;border-radius:13px;flex:none;
+    background:linear-gradient(135deg,var(--coral),var(--blue));display:grid;place-items:center}
+  .sig svg{width:25px;height:25px}
+  .titles h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(21px,3.6vw,29px);
+    letter-spacing:-.025em;margin:0;line-height:1}
+  .titles p{margin:6px 0 0;color:var(--ink-2);font-size:13px}
+  .livechip{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11.5px;
+    letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);background:var(--card);
+    border:1px solid var(--line-2);border-radius:999px;padding:8px 14px}
+  .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);position:relative}
+  .pulse::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid var(--green);
+    animation:ring 2.4s ease-out infinite;opacity:.6}
+  .pulse.idle{background:var(--faint)}.pulse.idle::after{display:none}
+  @keyframes ring{from{transform:scale(.6);opacity:.7}to{transform:scale(2);opacity:0}}
+
+  .eyebrow{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-2);margin:26px 2px 13px;display:flex;align-items:center;gap:10px;font-weight:700}
+  .eyebrow::before{content:"";width:12px;height:12px;border-radius:4px;flex:none;background:var(--coral)}
+  .eyebrow::after{content:"";height:1px;flex:1;background:var(--line-2)}
+
+  /* système */
+  .sys{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:620px){.sys{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line-2);border-radius:16px;padding:18px}
+  .sys .card .name::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:8px;vertical-align:1px}
+  .sys .card:nth-child(1) .name::before{background:var(--blue)}
+  .sys .card:nth-child(2) .name::before{background:var(--green)}
+  .card .row1{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .card .name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px}
+  .card .id{font-family:'Space Mono',monospace;font-size:11px;color:var(--faint);margin-top:3px}
+  .state{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:#0a7d57;
+    background:rgba(16,176,122,.12);padding:5px 11px;border-radius:999px}
+  .state .pulse{background:var(--green)}.state .pulse::after{display:none}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}
+  .tag{font-size:11.5px;color:var(--ink-2);border:1px solid var(--line-2);border-radius:9px;padding:5px 10px}
+  .tag b{color:var(--ink);font-weight:600}
+  .tag.good{border-color:rgba(16,176,122,.4);color:#0a7d57;background:rgba(16,176,122,.07)}
+  .tag.good b{color:#0a7d57}
+
+  /* KPI — blocs pleins */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:760px){.kpis{grid-template-columns:1fr 1fr}}
+  .kpi{border-radius:16px;padding:16px 17px 17px;color:#fff;position:relative;overflow:hidden;min-height:118px;
+    display:flex;flex-direction:column;justify-content:space-between}
+  .kpi.coral{background:var(--coral)}.kpi.blue{background:var(--blue)}
+  .kpi.violet{background:var(--teal)}.kpi.green{background:var(--green)}
+  .kpi .ico{position:absolute;right:12px;top:13px;opacity:.4}
+  .kpi .ico svg{width:26px;height:26px}
+  .kpi .lab{font-family:'Space Mono',monospace;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#fff}
+  .kpi .val{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,6vw,42px);line-height:1;letter-spacing:-.02em;color:#fff}
+  .kpi .sub{font-size:11.5px;color:rgba(255,255,255,.9);margin-top:5px}
+  .kpi.dim{filter:saturate(.6) brightness(.97)}
+
+  /* flux */
+  .pipe{background:var(--card);border:1px solid var(--line-2);border-radius:18px;padding:22px 16px;position:relative}
+  .track{display:flex;align-items:flex-start;gap:0;justify-content:space-between;position:relative;overflow-x:auto}
+  .track::before{content:"";position:absolute;left:8%;right:8%;top:19px;height:3px;border-radius:3px;
+    background:linear-gradient(90deg,var(--coral),var(--blue),var(--violet),var(--green));z-index:1}
+  .spark{position:absolute;top:13px;left:8%;width:13px;height:13px;border-radius:50%;z-index:3;background:#fff;
+    border:3px solid var(--blue);animation:travel 5.5s cubic-bezier(.6,0,.4,1) infinite}
+  @keyframes travel{0%{left:8%;opacity:0}8%{opacity:1}82%{opacity:1}100%{left:84%;opacity:0}}
+  .node{flex:1 1 0;min-width:86px;text-align:center;position:relative;z-index:2;padding:0 4px}
+  .node .dot{width:40px;height:40px;border-radius:12px;margin:0 auto 9px;display:grid;place-items:center;color:#fff}
+  .node:nth-child(2) .dot{background:var(--coral)}
+  .node:nth-child(3) .dot{background:var(--blue)}
+  .node:nth-child(4) .dot{background:var(--teal)}
+  .node:nth-child(5) .dot{background:#111}
+  .node:nth-child(6) .dot{background:var(--coral)}
+  .node .dot svg{width:19px;height:19px}
+  .node .t{font-size:12px;font-weight:600;font-family:'Space Grotesk',sans-serif}
+  .node .d{font-size:10.5px;color:var(--faint);margin-top:3px;line-height:1.3}
+  .net{margin-top:16px;border-top:1px dashed var(--line-2);padding-top:14px;display:flex;align-items:center;
+    gap:9px;color:var(--ink-2);font-size:12.5px;flex-wrap:wrap}
+  .net .pill{background:var(--teal);color:#fff;font-weight:600;font-family:'Space Grotesk',sans-serif;
+    padding:3px 10px;border-radius:8px;font-size:12px}
+  .net .arrow{color:var(--faint);font-weight:700}
+
+  /* derniers leads */
+  .recent{background:var(--card);border:1px solid var(--line-2);border-radius:16px;overflow:hidden}
+  .lead{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
+  .lead:last-child{border-bottom:0}
+  .lead .sc{width:10px;height:10px;border-radius:50%;flex:none;background:var(--coral)}
+  .lead .sc.tiede{background:var(--amber)}
+  .lead .nm{font-weight:600;font-size:14px}
+  .lead .meta{color:var(--ink-2);font-size:12px;margin-top:1px}
+  .lead .badge{margin-left:auto;font-family:'Space Mono',monospace;font-size:10.5px;padding:5px 10px;border-radius:8px;
+    border:1px solid var(--line-2);color:var(--ink-2);white-space:nowrap}
+  .lead .badge.repris{color:var(--blue);border-color:rgba(59,91,240,.4);background:rgba(59,91,240,.07)}
+  .lead .badge.nouveau{color:#0a7d57;border-color:rgba(16,176,122,.4);background:rgba(16,176,122,.07)}
+  .empty{padding:28px 18px;text-align:center;color:var(--ink-2);font-size:13.5px;line-height:1.65}
+  .empty b{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:7px;margin-top:13px;cursor:pointer;font-family:'Space Grotesk',sans-serif;
+    font-weight:600;font-size:13px;color:#fff;background:var(--ink);border:0;border-radius:10px;padding:9px 16px}
+
+  footer{margin-top:26px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--faint);
+    font-size:11.5px;font-family:'Space Mono',monospace}
+  @media(prefers-reduced-motion:reduce){.spark,.pulse::after{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="sig" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="12" cy="3" r="1"/>
+          <circle cx="9" cy="13" r="1.1" fill="#fff" stroke="none"/><circle cx="15" cy="13" r="1.1" fill="#fff" stroke="none"/><path d="M9.5 16.5h5"/>
+        </svg>
+      </div>
+      <div class="titles"><h1>Mind Qualifier · Cockpit</h1><p>Tri des prospects WhatsApp — Digital Mind</p></div>
+    </div>
+    <div class="livechip"><span class="pulse" id="liveDot"></span><span id="liveTxt">système en ligne</span></div>
+  </header>
+
+  <div class="eyebrow">Système</div>
+  <div class="sys">
+    <div class="card">
+      <div class="row1"><div><div class="name">Mind Qualifier</div><div class="id">scénario 9447856 · webhook</div></div>
+        <span class="state"><span class="pulse"></span>actif</span></div>
+      <div class="tags"><span class="tag good"><b>Séquentiel</b> ✓ anti-doublon</span>
+        <span class="tag">canaux <b>texte · image · vocal</b></span><span class="tag">tri <b>chaud / tiède / froid</b></span></div>
+    </div>
+    <div class="card">
+      <div class="row1"><div><div class="name">Reprise auto</div><div class="id">scénario 9450016 · toutes les 30 min</div></div>
+        <span class="state"><span class="pulse"></span>actif</span></div>
+      <div class="tags"><span class="tag good"><b>Délai 30 min</b> ✓ priorité humain</span>
+        <span class="tag">relance si <b>Nouveau</b> non pris</span><span class="tag">prochain run <b id="nextRun">—</b></span></div>
+    </div>
+  </div>
+
+  <div class="eyebrow">Leads chauds</div>
+  <div class="kpis">
+    <div class="kpi coral" id="cTotal"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><path d="M12 3s5 4 5 9a5 5 0 0 1-10 0c0-2 1-3 1-3 0 2 4 2 4-6z"/></svg></div>
+      <div class="lab">Leads chauds</div><div><div class="val" id="kTotal">—</div><div class="sub">total enregistrés</div></div></div>
+    <div class="kpi blue" id="cToday"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/></svg></div>
+      <div class="lab">Aujourd'hui</div><div><div class="val" id="kToday">—</div><div class="sub">nouveaux leads</div></div></div>
+    <div class="kpi violet" id="cRepris"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4"/></svg></div>
+      <div class="lab">Repris IA</div><div><div class="val" id="kRepris">—</div><div class="sub">filet déclenché</div></div></div>
+    <div class="kpi green" id="cHumain"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg></div>
+      <div class="lab">Pris par l'équipe</div><div><div class="val" id="kHumain">—</div><div class="sub">Balkissa &amp; co.</div></div></div>
+  </div>
+
+  <div class="eyebrow">Flux d'un prospect</div>
+  <div class="pipe">
+    <div class="track">
+      <span class="spark" aria-hidden="true"></span>
+      <div class="node"><div class="dot" style="background:#111"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><path d="M21 11.5a8.4 8.4 0 0 1-12.1 7.5L3 21l2-5.9A8.5 8.5 0 1 1 21 11.5z"/></svg></div><div class="t">Message</div><div class="d">texte · photo · vocal</div></div>
+      <div class="node"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><path d="M12 3l2.1 4.3 4.7.7-3.4 3.3.8 4.7L12 14.9 7.8 16l.8-4.7L5.2 8l4.7-.7L12 3z"/></svg></div><div class="t">Tri IA</div><div class="d">chaud / tiède / froid</div></div>
+      <div class="node"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><path d="M4 5h16v11H7l-3 3V5z"/></svg></div><div class="t">Réponse</div><div class="d">WhatsApp auto</div></div>
+      <div class="node"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></div><div class="t">Fiche Notion</div><div class="d">si chaud &amp; nouveau</div></div>
+      <div class="node"><div class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg></div><div class="t">Alerte mail</div><div class="d">toi + Balkissa</div></div>
+    </div>
+    <div class="net"><span>Personne ne répond en 30 min ?</span><span class="arrow">→</span>
+      <span class="pill">Reprise auto</span><span>relance le prospect et marque « Repris IA ».</span></div>
+  </div>
+
+  <div class="eyebrow">Derniers leads chauds</div>
+  <div class="recent" id="recent">
+    <div class="empty" id="emptyState">
+      <div>Les compteurs et la liste s'allument dès que le <b>flux des leads</b> est branché.</div>
+      <div style="margin-top:6px;color:var(--faint)">État système ci-dessus = en direct. Pour les leads, branche le webhook Make « Cockpit API ».</div>
+      <button class="btn" onclick="refresh()">Réessayer</button>
+    </div>
+  </div>
+
+  <footer><span id="stamp">—</span><span>Digital Mind · actualisation auto 60 s</span></footer>
+</div>
+
+<script>
+  const API = "https://hook.eu2.make.com/0fumaq9wreti2au73w0jn96xgm2bcqsp";
+  const $ = s => document.querySelector(s);
+  const fmt = n => (n==null? "—" : String(n));
+  function nextRun(){const d=new Date(),m=d.getMinutes();const a=m<8?8-m:(m<38?38-m:68-m);
+    return new Date(d.getTime()+a*60000).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}
+  function stamp(){$("#stamp").textContent="maj "+new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
+  function setLive(on){$("#liveDot").classList.toggle('idle',!on);
+    $("#liveTxt").textContent=on?"flux des leads en direct":"système en ligne · leads non branchés";}
+  function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+  function renderLeads(list){const box=$("#recent");if(!list||!list.length)return;
+    box.innerHTML=list.slice(0,8).map(l=>{const sc=(l.score||'chaud').toLowerCase()==='tiede'?'tiede':'';
+      const st=(l.statut||'').toLowerCase();const bc=st.includes('repris')?'repris':st.includes('nouveau')?'nouveau':'';
+      return `<div class="lead"><span class="sc ${sc}"></span><div><div class="nm">${esc(l.nom||'Lead')}</div>
+        <div class="meta">${esc(l.produit||l.besoin||'—')}</div></div>
+        <span class="badge ${bc}">${esc(l.statut||'—')}</span></div>`;}).join('');}
+  function parseNotion(raw){
+    const res=raw.results||[];
+    const now=new Date(),ty=now.getFullYear(),tm=now.getMonth(),tdd=now.getDate();
+    let total=res.length,nToday=0,nRepris=0,nHumain=0;const recents=[];
+    res.forEach(p=>{const pr=p.properties||{};
+      const st=(pr["Statut"]&&pr["Statut"].select&&pr["Statut"].select.name)||"";
+      const nom=(pr["Nom complet"]&&pr["Nom complet"].title&&pr["Nom complet"].title[0]&&pr["Nom complet"].title[0].plain_text)||"Lead";
+      const notes=(pr["Notes"]&&pr["Notes"].rich_text&&pr["Notes"].rich_text[0]&&pr["Notes"].rich_text[0].plain_text)||"";
+      const ct=new Date(p.created_time);
+      if(ct.getFullYear()===ty&&ct.getMonth()===tm&&ct.getDate()===tdd)nToday++;
+      if(st==="Repris IA")nRepris++;
+      if(st&&st!=="Nouveau"&&st!=="Repris IA")nHumain++;
+      recents.push({nom:nom,statut:st,besoin:notes});});
+    return {total:total,today:nToday,repris:nRepris,humain:nHumain,recents:recents};
+  }
+  async function refresh(){$("#nextRun").textContent=nextRun();stamp();
+    if(!API){setLive(false);return;}
+    try{const r=await fetch(API,{cache:'no-store'});const raw=await r.json();
+      const d=raw&&raw.results?parseNotion(raw):raw;
+      $("#kTotal").textContent=fmt(d.total);$("#kToday").textContent=fmt(d.today??d.aujourdhui);
+      $("#kRepris").textContent=fmt(d.repris??d.repris_ia);$("#kHumain").textContent=fmt(d.humain??d.equipe);
+      renderLeads(d.recents||d.leads||[]);
+      ['cTotal','cToday','cRepris','cHumain'].forEach(id=>$('#'+id).classList.remove('dim'));
+      setLive(true);
+    }catch(e){setLive(false);$("#liveTxt").textContent="flux injoignable · vérifie le webhook";}}
+  ['cTotal','cToday','cRepris','cHumain'].forEach(id=>$('#'+id).classList.add('dim'));
+  refresh();setInterval(refresh,60000);
+</script>
+</body>
+</html>
