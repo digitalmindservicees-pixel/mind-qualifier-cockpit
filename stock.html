@@ -227,7 +227,7 @@
       }
     }
     refresh();
-    setInterval(refresh, 60000);
+    // Pas de rafraichissement automatique : recharger la page (F5) pour actualiser.
   var $=function(s){return document.querySelector(s);};
   var CAT="all";
   var fmt=function(n){return n==null?"—":Number(n).toLocaleString('fr-FR');};
