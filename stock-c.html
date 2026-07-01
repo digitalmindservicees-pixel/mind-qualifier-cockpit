@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Réserve · Design C (Data table)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4f5f7; --card:#ffffff; --ink:#1f2430; --ink2:#646b7a; --faint:#9aa1ae;
+    --line:#e7e9ee; --line2:#dfe2e8; --accent:#2f56d9;
+    --rupture:#d92d20; --bas:#dd8a1a; --ok:#12a071; --track:#edeff3;
+    --rupt-bg:#fdecec; --bas-bg:#fdf4e6; --ok-bg:#e9f7f1;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:24px 18px 64px}
+  .mono{font-family:'Space Mono',monospace}
+  .banner{background:#e8edfd;color:#233ea8;border-radius:8px;padding:9px 14px;font-size:12.5px;margin-bottom:20px;font-weight:500}
+  .top{display:flex;align-items:center;gap:13px;margin-bottom:22px}
+  .mark{width:44px;height:44px;border-radius:11px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+  h1{font-weight:800;font-size:21px;letter-spacing:-.02em;margin:0}
+  .top p{margin:2px 0 0;color:var(--ink2);font-size:12.5px}
+  .live{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink2);font-weight:600;font-family:'Space Mono',monospace}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+  .ledger{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-bottom:22px;background:var(--card);border:1px solid var(--line2);border-radius:12px;overflow:hidden}
+  .lg{padding:14px 18px;border-left:1px solid var(--line)}
+  .lg:first-child{border-left:none}
+  .lg .k{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700;font-family:'Space Mono',monospace}
+  .lg .v{font-weight:800;font-size:23px;margin-top:5px;letter-spacing:-.01em}
+  .lg .u{font-size:11px;color:var(--faint);margin-top:1px}
+  .lg.rupt .v{color:var(--rupture)} .lg.bas .v{color:var(--bas)} .lg:first-child .v{color:var(--accent)}
+  @media(max-width:720px){.ledger{grid-template-columns:1fr 1fr}.lg:nth-child(3),.lg:nth-child(4){border-top:1px solid var(--line)}.lg:nth-child(3){border-left:none}}
+  .invbar{display:flex;gap:10px;align-items:center;margin:0 0 12px;flex-wrap:wrap}
+  .search{position:relative;flex:1;min-width:220px}
+  .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--faint)}
+  .search input{width:100%;padding:10px 14px 10px 37px;border:1px solid var(--line2);border-radius:9px;background:var(--card);color:var(--ink);font:inherit;font-size:13px;outline:none}
+  .search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,86,217,.12)}
+  .cpills{display:flex;gap:6px;flex-wrap:wrap}
+  .cpill{cursor:pointer;border:1px solid var(--line2);background:var(--card);color:var(--ink2);font:inherit;font-size:11.5px;font-weight:600;padding:7px 11px;border-radius:8px;transition:.15s}
+  .cpill:hover{color:var(--ink)}
+  .cpill.on{color:#fff;border-color:transparent;background:var(--ink)}
+  .cpill .c{opacity:.55;margin-left:4px;font-size:10px;font-family:'Space Mono',monospace}
+  .tablewrap{background:var(--card);border:1px solid var(--line2);border-radius:12px;overflow:hidden}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  thead th{text-align:left;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);font-weight:700;font-family:'Space Mono',monospace;padding:11px 16px;border-bottom:1px solid var(--line2);background:#fafbfc;cursor:pointer;user-select:none;white-space:nowrap}
+  thead th.num{text-align:right}
+  thead th:hover{color:var(--ink2)}
+  thead th .ar{opacity:.5;font-size:9px;margin-left:3px}
+  tbody td{padding:11px 16px;border-top:1px solid var(--line)}
+  tbody tr:hover{background:#fafbfc}
+  .c-art{font-weight:600}
+  .c-art .loc{font-size:11px;color:var(--faint);font-weight:400;margin-top:1px}
+  .catbadge{font-size:10.5px;font-weight:600;color:var(--ink2);background:var(--bg);border:1px solid var(--line);padding:2px 8px;border-radius:6px;white-space:nowrap}
+  td.num{text-align:right;font-family:'Space Mono',monospace;font-weight:700;white-space:nowrap}
+  td.num .seuil{color:var(--faint);font-weight:400;font-size:11px}
+  .stat{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .stat:before{content:"";width:6px;height:6px;border-radius:50%}
+  .stat.rupture{color:var(--rupture);background:var(--rupt-bg)}.stat.rupture:before{background:var(--rupture)}
+  .stat.bas{color:var(--bas);background:var(--bas-bg)}.stat.bas:before{background:var(--bas)}
+  .stat.ok{color:var(--ok);background:var(--ok-bg)}.stat.ok:before{background:var(--ok)}
+  .minibar{width:64px;height:6px;background:var(--track);border-radius:4px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:8px}
+  .minibar > i{display:block;height:100%;border-radius:4px}
+  .noresult{padding:34px;text-align:center;color:var(--ink2)}
+  .sec{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink2);font-weight:700;margin:0 3px 12px;display:flex;align-items:center;gap:9px}
+  .sec .n{margin-left:auto;color:var(--faint)}
+  @media(max-width:720px){.col-loc,.col-four{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="banner">Aperçu design <b>C — Tableau dense (data-first)</b> · données de démonstration</div>
+  <header class="top">
+    <div class="mark">📦</div>
+    <div><h1>Réserve</h1><p>Stock de l'atelier · Digital Mind</p></div>
+    <div class="live"><span class="dot"></span><span>en direct</span></div>
+  </header>
+  <div class="ledger">
+    <div class="lg"><div class="k">Valeur en réserve</div><div class="v" id="kVal">—</div><div class="u">FCFA</div></div>
+    <div class="lg"><div class="k">Références</div><div class="v" id="kRefs">—</div><div class="u">articles</div></div>
+    <div class="lg rupt"><div class="k">En rupture</div><div class="v" id="kRupt">—</div><div class="u">stock épuisé</div></div>
+    <div class="lg bas"><div class="k">Sous le seuil</div><div class="v" id="kBas">—</div><div class="u">à recommander</div></div>
+  </div>
+  <div class="sec">Inventaire <span class="n" id="invCount"></span></div>
+  <div class="invbar">
+    <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="q" type="text" placeholder="Chercher…" autocomplete="off"></label>
+  </div>
+  <div class="cpills" id="cpills" style="margin-bottom:14px"></div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr>
+        <th data-s="article">Article <span class="ar" id="ar-article"></span></th>
+        <th data-s="cat">Catégorie <span class="ar" id="ar-cat"></span></th>
+        <th class="col-loc" data-s="emplacement">Emplacement <span class="ar" id="ar-emplacement"></span></th>
+        <th class="col-four" data-s="fournisseur">Fournisseur <span class="ar" id="ar-fournisseur"></span></th>
+        <th class="num" data-s="stock">Stock <span class="ar" id="ar-stock"></span></th>
+        <th class="num" data-s="valeur">Valeur <span class="ar" id="ar-valeur"></span></th>
+        <th data-s="statut">Statut <span class="ar" id="ar-statut"></span></th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+<script>
+  
+    var ITEMS = [
+      {article:"Coffret Port Carte de Visite", cat:"Goodies Premium", stock:0, seuil:0, prix:12000, unite:"pcs", emplacement:"Magasin", fournisseur:"Fournisseur chine"},
+      {article:"Casquette brodée logo", cat:"Textile Casquette", stock:3, seuil:10, prix:3500, unite:"pcs", emplacement:"Étagère B2", fournisseur:"Atelier Dakar"},
+      {article:"Polo piqué M", cat:"Textile Polo", stock:8, seuil:12, prix:6000, unite:"pcs", emplacement:"Étagère C1", fournisseur:"Atelier Dakar"},
+      {article:"Agenda 2026", cat:"Agenda", stock:24, seuil:15, prix:4500, unite:"pcs", emplacement:"Réserve", fournisseur:"Imprimerie Ndiaye"},
+      {article:"Clé USB 32Go", cat:"Accessoires Informatique", stock:40, seuil:20, prix:5000, unite:"pcs", emplacement:"Tiroir A", fournisseur:"TechImport"},
+      {article:"Souris sans fil", cat:"Accessoires Informatique", stock:15, seuil:8, prix:8000, unite:"pcs", emplacement:"Tiroir A", fournisseur:"TechImport"},
+      {article:"Tapis de souris", cat:"Accessoires Informatique", stock:60, seuil:25, prix:2000, unite:"pcs", emplacement:"Étagère D", fournisseur:"TechImport"},
+      {article:"Mug céramique", cat:"Goodies Premium", stock:18, seuil:20, prix:3000, unite:"pcs", emplacement:"Étagère B1", fournisseur:"Fournisseur chine"},
+      {article:"Stylo métal gravé", cat:"Goodies Premium", stock:120, seuil:50, prix:1500, unite:"pcs", emplacement:"Tiroir C", fournisseur:"Fournisseur chine"},
+      {article:"T-shirt coton L", cat:"Textile Polo", stock:5, seuil:10, prix:4000, unite:"pcs", emplacement:"Étagère C2", fournisseur:"Atelier Dakar"}
+    ];
+  var $=function(s){return document.querySelector(s);};
+  var CAT="all", SORT="statut", DIR=1;
+  var fmt=function(n){return n==null?"—":Number(n).toLocaleString('fr-FR');};
+  var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
+  function statusOf(it){ if(it.stock<=0) return "rupture"; if(it.seuil>0&&it.stock<=it.seuil) return "bas"; return "ok"; }
+  function statRank(it){var s=statusOf(it);return s==="rupture"?0:s==="bas"?1:2;}
+  function valOf(it){return it.stock>0?it.stock*it.prix:0;}
+  function render(){
+    var valeur=0,rupt=0,bas=0;
+    ITEMS.forEach(function(it){valeur+=valOf(it);var s=statusOf(it);if(s==="rupture")rupt++;else if(s==="bas")bas++;});
+    $("#kVal").textContent=fmt(Math.round(valeur));$("#kRefs").textContent=fmt(ITEMS.length);$("#kRupt").textContent=fmt(rupt);$("#kBas").textContent=fmt(bas);
+    renderPills();renderTable();
+  }
+  function renderPills(){var counts={};ITEMS.forEach(function(it){counts[it.cat]=(counts[it.cat]||0)+1;});var cats=Object.keys(counts).sort();
+    var h='<button class="cpill '+(CAT==="all"?"on":"")+'" data-c="all">Tous <span class="c">'+ITEMS.length+'</span></button>';
+    cats.forEach(function(c){h+='<button class="cpill '+(CAT===c?"on":"")+'" data-c="'+esc(c)+'">'+esc(c)+' <span class="c">'+counts[c]+'</span></button>';});
+    var box=$("#cpills");box.innerHTML=h;if(!box.__w){box.__w=1;box.addEventListener('click',function(e){var b=e.target.closest('.cpill');if(!b)return;CAT=b.getAttribute('data-c');render();});}}
+  function renderTable(){
+    var q=($("#q").value||"").trim().toLowerCase();
+    var arr=ITEMS.filter(function(it){var okC=CAT==="all"||it.cat===CAT;var hay=(it.article+' '+it.cat+' '+it.emplacement+' '+it.fournisseur).toLowerCase();return okC&&(!q||hay.indexOf(q)>=0);});
+    arr.sort(function(a,b){var x,y;
+      if(SORT==="statut"){x=statRank(a);y=statRank(b);}
+      else if(SORT==="stock"){x=a.stock;y=b.stock;}
+      else if(SORT==="valeur"){x=valOf(a);y=valOf(b);}
+      else {return DIR*String(a[SORT]||"").localeCompare(String(b[SORT]||""),'fr');}
+      return DIR*(x-y);
+    });
+    $("#invCount").textContent=arr.length+(arr.length>1?' articles':' article');
+    ['article','cat','emplacement','fournisseur','stock','valeur','statut'].forEach(function(k){var e=document.getElementById('ar-'+k);if(e)e.textContent=(SORT===k?(DIR>0?'▲':'▼'):'');});
+    var tb=$("#tbody");
+    if(!arr.length){tb.innerHTML='<tr><td colspan="7" class="noresult">Aucun article ne correspond.</td></tr>';return;}
+    var h='';arr.forEach(function(it){var s=statusOf(it);var pct=it.seuil>0?Math.max(4,Math.min(100,(it.stock/(it.seuil*2))*100)):(it.stock>0?100:4);var col=s==="rupture"?"#d92d20":s==="bas"?"#dd8a1a":"#12a071";
+      h+='<tr>'
+        +'<td class="c-art"><div>'+esc(it.article)+'</div><div class="loc">'+esc(it.unite||'')+'</div></td>'
+        +'<td><span class="catbadge">'+esc(it.cat)+'</span></td>'
+        +'<td class="col-loc">'+esc(it.emplacement||'—')+'</td>'
+        +'<td class="col-four">'+esc(it.fournisseur||'—')+'</td>'
+        +'<td class="num">'+fmt(it.stock)+(it.seuil?' <span class="seuil">/'+fmt(it.seuil)+'</span>':'')+'<span class="minibar"><i style="width:'+pct.toFixed(0)+'%;background:'+col+'"></i></span></td>'
+        +'<td class="num">'+fmt(Math.round(valOf(it)))+'</td>'
+        +'<td><span class="stat '+s+'">'+(s==="rupture"?'Rupture':s==="bas"?'Sous seuil':'OK')+'</span></td>'
+        +'</tr>';});
+    tb.innerHTML=h;
+  }
+  document.querySelectorAll('thead th').forEach(function(th){th.addEventListener('click',function(){var k=th.getAttribute('data-s');if(SORT===k)DIR=-DIR;else{SORT=k;DIR=(k==="stock"||k==="valeur"||k==="statut")?1:1;}renderTable();});});
+  $("#q").addEventListener('input',renderTable);
+  render();
+</script>
+</body>
+</html>
