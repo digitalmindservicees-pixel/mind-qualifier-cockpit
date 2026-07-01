@@ -3,23 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Réserve · Design B2 (Bordeaux)</title>
+<title>Réserve · Design B2 (Bordeaux &amp; doré)</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f7f5f5; --card:#ffffff; --ink:#1a1416; --ink2:#6b6167; --faint:#9a9198;
-    --line:#efeaeb; --accent:#7b1e2b; --accent-2:#a03040; --accent-soft:#f6eaec;
-    --rupture:#c0392b; --bas:#c77d1a; --ok:#1a8f68; --track:#efeaeb;
-    --shadow:0 1px 3px rgba(60,20,30,.05);
-    --shadow-hover:0 10px 30px rgba(123,30,43,.14);
+    --bg:#f7f3ec; --card:#fffdf9; --ink:#2a2024; --ink2:#6f6560; --faint:#a49a92;
+    --line:#ece4d8; --accent:#8a2433; --accent-2:#b23a4a; --accent-soft:#f3e7e4;
+    --gold:#c8a24a; --gold-soft:#f5ecd6; --sage:#5f8a6a;
+    --rupture:#c0392b; --bas:#c98a1e; --ok:#5f8a6a; --track:#ece4d8;
+    --shadow:0 1px 3px rgba(70,45,30,.06);
+    --shadow-hover:0 12px 32px rgba(138,36,51,.13);
   }
   *{box-sizing:border-box}
   html,body{margin:0}
   body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
   .wrap{max-width:940px;margin:0 auto;padding:28px 18px 64px}
-  .banner{background:var(--accent-soft);color:var(--accent);border-radius:10px;padding:9px 14px;font-size:12.5px;margin-bottom:22px;font-weight:500}
+  .banner{background:linear-gradient(90deg,var(--gold-soft),var(--accent-soft));color:var(--accent);border-radius:10px;padding:9px 14px;font-size:12.5px;margin-bottom:22px;font-weight:500;border:1px solid #eaddc4}
   .top{display:flex;align-items:center;gap:14px;margin-bottom:26px}
-  .mark{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none;box-shadow:0 4px 14px rgba(123,30,43,.3);transition:transform .3s}
+  .mark{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--gold));color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none;box-shadow:0 4px 14px rgba(138,36,51,.28);transition:transform .3s}
   .mark:hover{transform:rotate(-6deg) scale(1.05)}
   h1{font-weight:800;font-size:22px;letter-spacing:-.02em;margin:0}
   .top p{margin:2px 0 0;color:var(--ink2);font-size:12.5px}
@@ -28,7 +29,7 @@
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(26,143,104,.4)}70%{box-shadow:0 0 0 6px rgba(26,143,104,0)}100%{box-shadow:0 0 0 0 rgba(26,143,104,0)}}
   .ledger{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:8px}
   .lg{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);transition:transform .25s,box-shadow .25s}
-  .lg:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover)}
+  .lg:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover);border-color:var(--gold)}
   .lg .k{font-size:11.5px;color:var(--ink2);font-weight:600}
   .lg .v{font-weight:800;font-size:29px;margin-top:8px;letter-spacing:-.02em}
   .lg .u{font-size:11.5px;color:var(--faint);margin-top:3px}
@@ -38,13 +39,13 @@
   .sec .n{margin-left:auto;color:var(--faint);font-weight:600;text-transform:none;letter-spacing:0}
   .tickets{display:flex;flex-direction:column;gap:12px}
   .ticket{display:grid;grid-template-columns:auto 1fr 200px 100px;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px;box-shadow:var(--shadow);position:relative;cursor:pointer;transition:transform .22s,box-shadow .22s,border-color .22s}
-  .ticket:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);border-color:var(--accent-soft)}
+  .ticket:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);border-color:var(--gold)}
   .ticket:before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:4px}
   .ticket.rupture:before{background:var(--rupture)} .ticket.bas:before{background:var(--bas)}
   .thumb{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;color:#fff;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);transition:transform .22s}
   .ticket:hover .thumb{transform:scale(1.08)}
   .tk-name{font-weight:700;font-size:15.5px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-  .tk-cat{font-size:10.5px;font-weight:600;color:var(--ink2);background:var(--bg);border:1px solid var(--line);padding:2px 8px;border-radius:20px}
+  .tk-cat{font-size:10.5px;font-weight:600;color:#8a6d2b;background:var(--gold-soft);border:1px solid #eaddc4;padding:2px 8px;border-radius:20px}
   .tk-sub{font-size:11.5px;color:var(--faint);margin-top:4px}
   .tk-read{text-align:right}
   .tk-read b{font-size:22px;font-weight:800} .tk-read span{font-size:12px;color:var(--faint)}
@@ -63,19 +64,19 @@
   .search{position:relative}
   .search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--faint)}
   .search input{width:100%;padding:12px 14px 12px 40px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;font-size:13.5px;outline:none;box-shadow:var(--shadow);transition:border-color .2s,box-shadow .2s}
-  .search input:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+  .search input:focus{border-color:var(--gold);box-shadow:0 0 0 4px var(--gold-soft)}
   .cpills{display:flex;gap:8px;flex-wrap:wrap;margin:0 1px 16px}
   .cpill{cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--ink2);font:inherit;font-size:12px;font-weight:600;padding:8px 14px;border-radius:20px;transition:.18s}
-  .cpill:hover{color:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
+  .cpill:hover{color:#8a6d2b;border-color:var(--gold);transform:translateY(-1px)}
   .cpill.on{color:#fff;border-color:transparent;background:var(--accent)}
   .cpill .c{opacity:.6;margin-left:5px;font-size:10.5px}
   .inv{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
   .irow{display:grid;grid-template-columns:auto 1fr 180px 84px;gap:14px;align-items:center;padding:12px 18px;border-top:1px solid var(--line);cursor:pointer;transition:background .18s,padding-left .18s}
   .irow:first-child{border-top:none}
-  .irow:hover{background:var(--accent-soft);padding-left:24px}
+  .irow:hover{background:var(--gold-soft);padding-left:24px}
   .thumb-sm{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#fff;flex:none}
   .iv-name{font-weight:600;font-size:13.5px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-  .iv-cat{font-size:10px;font-weight:600;color:var(--ink2);background:var(--bg);border:1px solid var(--line);padding:1px 8px;border-radius:20px}
+  .iv-cat{font-size:10px;font-weight:600;color:#8a6d2b;background:var(--gold-soft);border:1px solid #eaddc4;padding:1px 8px;border-radius:20px}
   .iv-loc{font-size:11px;color:var(--faint);margin-top:3px}
   .iv-read{text-align:right;font-weight:700;font-size:14px}
   .iv-read span{font-size:10.5px;color:var(--faint);font-weight:400}
@@ -106,7 +107,7 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="banner">Aperçu design <b>B2 — Bordeaux + survol + fiche produit</b> · données de démonstration (images = placeholders)</div>
+  <div class="banner">Aperçu design <b>B2 — Bordeaux &amp; doré</b> · palette harmonisée · données de démonstration (images = placeholders)</div>
   <header class="top">
     <div class="mark">📦</div>
     <div><h1>Réserve</h1><p>Stock de l'atelier · Digital Mind</p></div>
@@ -146,7 +147,7 @@
   var fmt=function(n){return n==null?"—":Number(n).toLocaleString('fr-FR');};
   var esc=function(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});};
   function statusOf(it){ if(it.stock<=0) return "rupture"; if(it.seuil>0&&it.stock<=it.seuil) return "bas"; return "ok"; }
-  var PALETTE=['#7b1e2b','#a03040','#8e5b3d','#5b6e8e','#3d7d6b','#8e6f2f','#6d4b7b','#a0553a'];
+  var PALETTE=['#8a2433','#b23a4a','#c8a24a','#5f8a6a','#a0553a','#7a5a86','#4d7d84','#b5893a'];
   function colorFor(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%PALETTE.length;return PALETTE[h];}
   function initOf(s){return (s||'?').trim().charAt(0).toUpperCase();}
   function gaugeHTML(it){ var s=statusOf(it),pct,tick=""; if(it.seuil>0){var ref=it.seuil*2;pct=Math.max(0,Math.min(100,(it.stock/ref)*100));tick='<span class="tick" style="left:50%"></span>';}else{pct=it.stock>0?100:0;}
