@@ -99,7 +99,53 @@
   .m-cell .l{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:700}
   .m-cell .v{font-size:16px;font-weight:700;margin-top:3px}
   .m-cell.full{grid-column:1/-1}
-  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+  /* ===== RESPONSIVE MOBILE (added) ===== */
+  @media(max-width:720px){
+    .wrap{padding:20px 14px 56px}
+    .banner{font-size:11.5px;padding:8px 12px;margin-bottom:18px}
+    .top{gap:12px;margin-bottom:22px;flex-wrap:wrap}
+    .mark{width:42px;height:42px;font-size:20px}
+    h1{font-size:20px}
+    .live{margin-left:auto}
+    .ledger{grid-template-columns:1fr 1fr;gap:12px}
+    .lg{padding:15px 16px}
+    .lg .v{font-size:25px}
+    .irow{grid-template-columns:auto 1fr auto;gap:12px;padding:12px 14px}
+    .irow:hover{padding-left:14px}
+    .ticket{padding:12px 14px}
+  }
+  @media(max-width:560px){
+    .top .live{margin-left:0;order:3;width:100%;justify-content:flex-start}
+    .ledger{grid-template-columns:1fr 1fr;gap:10px}
+    .lg{padding:14px}
+    .lg .v{font-size:23px}
+    .sec{margin:26px 2px 12px}
+    /* Tickets: name row, gauge full width, count on its own */
+    .ticket{grid-template-columns:auto 1fr;gap:10px 12px}
+    .tk-gauge{grid-column:1/-1;order:3;width:100%}
+    .tk-count,.tk-val{grid-column:2/-1;justify-self:end;order:2}
+    .irow{grid-template-columns:auto 1fr;gap:10px 12px}
+    .iv-gauge{grid-column:1/-1;order:3;width:100%}
+    .iv-count,.iv-val{grid-column:2/-1;justify-self:end;order:2}
+    .cats{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding-bottom:4px}
+    .cpill{flex:none;white-space:nowrap}
+    /* Modal near full width, scrollable */
+    .overlay{padding:0;align-items:flex-end}
+    .modal{max-width:none;width:100%;border-radius:20px 20px 0 0;max-height:92vh;overflow-y:auto}
+    .overlay.on .modal{transform:none}
+    .m-hero{height:150px}
+    .m-hero .init{font-size:52px}
+  }
+  @media(max-width:400px){
+    .wrap{padding:16px 11px 48px}
+    .ledger{grid-template-columns:1fr}
+    .lg .v{font-size:26px}
+    h1{font-size:19px}
+    .m-grid{grid-template-columns:1fr}
+    .m-title{font-size:17px}
+  }
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
