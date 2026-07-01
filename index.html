@@ -62,6 +62,7 @@
   .sys .card .name::before{content:"";display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:8px;vertical-align:1px}
   .sys .card:nth-child(1) .name::before{background:var(--blue)}
   .sys .card:nth-child(2) .name::before{background:var(--green)}
+  .sys .card:nth-child(3) .name::before{background:var(--amber)}
   .card .row1{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .card .name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px}
   .card .id{font-family:'Space Mono',monospace;font-size:11px;color:var(--faint);margin-top:3px}
@@ -163,6 +164,12 @@
         <span class="state"><span class="pulse"></span>actif</span></div>
       <div class="tags"><span class="tag good"><b>Délai 30 min</b> ✓ priorité humain</span>
         <span class="tag">relance si <b>Nouveau</b> non pris</span><span class="tag">prochain run <b id="nextRun">—</b></span></div>
+    </div>
+    <div class="card">
+      <div class="row1"><div><div class="name">Relance avant clôture</div><div class="id">scénario 9465187 · toutes les 2h</div></div>
+        <span class="state"><span class="pulse"></span>actif</span></div>
+      <div class="tags"><span class="tag good"><b>Garde-fou</b> ✓ ne double pas l'équipe</span>
+        <span class="tag">relance avant fermeture <b>24 h</b></span><span class="tag">rappel de l'offre en attente</span></div>
     </div>
   </div>
 
